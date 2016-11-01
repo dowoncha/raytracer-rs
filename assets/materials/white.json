@@ -1,0 +1,8 @@
+{
+  "uid": "1",
+  "name": "White Material",
+  "type": "Material",
+  "ambient": [ 0.0, 0.0, 0.0],
+  "diffuse": [ 1.0, 1.0, 1.0],
+  "specular": [ 0.0, 0.0, 0.0]
+}

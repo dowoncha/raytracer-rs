@@ -5,3 +5,7 @@ authors = ["Dowon Cha"]
 
 [dependencies]
 nalgebra = "0.10.*"
+serde = "0.8"
+serde_json = "0.8"
+gfx = "*"
+rand = "0.3"
