@@ -1,5 +1,6 @@
 #![allow(dead_code)]
 #![allow(unused_variables)]
+#![allow(unused_imports)]
 
 /**
  * Main library start point
@@ -7,6 +8,8 @@
 
 
 extern crate nalgebra as na;
+
+// mod nalgebra;
 
 #[cfg(test)]
 mod tests {
@@ -26,7 +29,7 @@ pub use ::geometry::Surface as Surface;
 mod core;
 mod common;
 mod particles;
-mod geometry;
+pub mod geometry;
 
 pub mod sims;
 
@@ -40,7 +43,7 @@ pub struct Engine<'a> {
 }
 
 impl<'a> Engine<'a> {
-    fn new() -> Engine<'a> {
+    pub fn new() -> Engine<'a> {
         Engine {
             scene: Box::new(Scene::new()),
             materials: HashMap::new()

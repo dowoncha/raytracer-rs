@@ -16,19 +16,19 @@ pub struct SpecieGenerator;
 
 pub struct Specie {
     name: String,
-    population: u64,
+    population: i64,
     eating_type: EatingType,
     life_expectancy: (u8, u8),
-    birth_rate: f32
+    birth_rate: i32
 }
 
 impl Specie {
-    fn name(&self) -> String {
-        self.name
+    fn name(&self) -> &str {
+        self.name.as_str()
     }
 
     fn update(&mut self) {
         // Calculate new population and age distribution?
-        self.population *= self.birth_rate;
+        self.population *= self.birth_rate as i64;
     }
 }

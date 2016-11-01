@@ -32,6 +32,16 @@ pub struct God;
 pub struct WorldGenerator;
 pub struct SpecieGenerator;
 
+impl SpecieGenerator {
+    fn randomize<'a>(&'a mut self) -> &'a mut SpecieGenerator {
+        self
+    }
+
+    fn create(&self) -> Specie {
+        unimplemented!();
+    }
+}
+
 pub enum Biome {
     Tundra,
     Grassland,
@@ -50,8 +60,12 @@ pub struct Specie {
 }
 
 impl Specie {
-    fn name(&self) -> String {
-        self.name
+    fn name(&self) -> &str {
+        self.name.as_str()
+    }
+
+    fn update(&mut self) {
+        unimplemented!();
     }
 }
 
@@ -62,13 +76,10 @@ impl God {
 
     pub fn populate(world: &mut World, count: i32) {
         for i in 0..count {
-            let specie = God::generate_specie();
+            let specie = God::generate_specie().randomize().create();
+
             world.add_specie(specie);
         }
-    }
-
-    fn generate_species(n: i32) -> {
-
     }
 
     pub fn generate_specie() -> SpecieGenerator {
@@ -77,7 +88,7 @@ impl God {
 }
 
 pub struct WorldParams {
-    max_species: i32
+    pub max_species: i32
 }
 
 pub struct World {
@@ -88,12 +99,13 @@ pub struct World {
 
 impl World {
     pub fn add_specie(&mut self, specie: Specie) {
-        self.species.insert(specie.name(), specie);
+        unimplemented!();
+        // self.species.insert(&specie.name(), specie);
     }
 
     pub fn update(&mut self) {
-        for specie in self.species {
-            specie.update();
+        unimplemented!();
+        for (name, specie) in &self.species {
         }
     }
 }
