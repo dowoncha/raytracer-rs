@@ -1,3 +1,12 @@
+// @Author: Cha Dowon <dowon>
+// @Date:   2016-11-20T11:01:12-05:00
+// @Project: BeAM
+// @Filename: world.rs
+// @Last modified by:   dowon
+// @Last modified time: 2016-11-20T11:02:12-05:00
+
+
+
 use std::collections::hash_map::HashMap;
 
 use ::sims::specie::Specie;
@@ -12,6 +21,16 @@ pub enum WorldSpeed {
 
 pub struct WorldGenerator;
 
+impl SpecieGenerator {
+    fn randomize<'a>(&'a mut self) -> &'a mut SpecieGenerator {
+        self
+    }
+
+    fn create(&self) -> Specie {
+        unimplemented!();
+    }
+}
+
 pub enum Biome {
     Tundra,
     Grassland,
@@ -19,7 +38,7 @@ pub enum Biome {
 }
 
 pub struct WorldParams {
-    max_species: i32
+    pub max_species: i32
 }
 
 pub struct World {
@@ -30,7 +49,7 @@ pub struct World {
 
 impl World {
     pub fn add_specie(&mut self, specie: Specie) {
-        // self.species.insert(specie.name(), specie);
+    // self.species.insert(specie.name(), specie);
     }
 
     pub fn update(&mut self) {

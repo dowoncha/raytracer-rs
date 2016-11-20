@@ -1,25 +1,15 @@
-/**
- * Core modules
- */
-mod material;
-mod light;
-mod scene;
-mod ray;
-mod image;
+// @Author: Cha Dowon <dowon>
+// @Date:   2016-11-20T11:01:12-05:00
+// @Project: BeAM
+// @Filename: mod.rs
+// @Last modified by:   dowon
+// @Last modified time: 2016-11-20T11:03:36-05:00
 
-pub use self::ray::*;
 
-pub use self::scene::Scene;
 
-pub fn render(scene: &Scene, buffer: &mut [u8]) {
-    unimplemented!();
-}
-
-pub fn set_sample_rate(rate: i32) {
-    unimplemented!();
-}
-/**
- * Core exports
- */
-pub use self::light::Light as Light;
-pub use self::material::Material as Material;
+pub mod material;
+pub mod light;
+pub mod scene;
+pub mod ray;
+pub mod image;
+pub mod shader;

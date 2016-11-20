@@ -19,15 +19,15 @@ impl Scene {
         }
     }
 
-    fn add_material(/* mat: Material */) {
-
+    pub fn add_material(/* mat: Material */) {
+        unimplemented!();
     }
 
-    fn add_surface(&mut self, surface: Box<Surface>) {
+    pub fn add_surface(&mut self, surface: Box<Surface>) {
         self.surfaces.push(surface);
     }
 
-    fn add_light(&mut self, light: Box<Light>) {
+    pub fn add_light(&mut self, light: Box<Light>) {
         self.lights.push(light);
     }
 }

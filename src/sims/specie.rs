@@ -1,3 +1,12 @@
+// @Author: Cha Dowon <dowon>
+// @Date:   2016-11-20T11:01:12-05:00
+// @Project: BeAM
+// @Filename: specie.rs
+// @Last modified by:   dowon
+// @Last modified time: 2016-11-20T11:02:38-05:00
+
+
+
 use std::collections::hash_map::HashMap;
 
 enum EatingType {
@@ -16,10 +25,10 @@ pub struct SpecieGenerator;
 
 pub struct Specie {
     name: String,
-    population: u64,
+    population: i64,
     eating_type: EatingType,
     life_expectancy: (u8, u8),
-    birth_rate: f32
+    birth_rate: i32
 }
 
 impl Specie {
@@ -29,6 +38,6 @@ impl Specie {
 
     pub fn update(&mut self) {
         // Calculate new population and age distribution?
-        // self.population *= self.birth_rate;
+        self.population *= self.birth_rate as i64;
     }
 }
