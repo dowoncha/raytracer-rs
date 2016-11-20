@@ -1,9 +1,9 @@
 use na::{dot};
 
 use ::Material;
-use ::core::ray::Ray;
+use ::core::Ray;
 use ::geometry::{Surface, HitContext};
-use types::Vec3f;
+use ::Vec3f;
 
 pub struct Plane {
     position: Vec3f,

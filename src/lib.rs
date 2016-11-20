@@ -1,57 +1,38 @@
+// #![feature(proc_macro)]
 #![allow(dead_code)]
 #![allow(unused_variables)]
-
 /**
- * Main library start point
+ * Disable compiler warnings
  */
 
-
+// Nalgebra for math
 extern crate nalgebra as na;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
-}
+/**
+ * Serialization crate
+ */
+#[cfg(feature="serde_derive")]
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
+extern crate serde_json;
+extern crate time;
+extern crate rand;
 
-// pub use ::core::Engine as Engine;
-pub use ::core::material::Material as Material;
-pub use ::core::light::Light as Light;
-pub use ::core::scene::Scene as Scene;
+/**
+ * Public exports
+ */
+pub use core::*;
+pub use geometry::*;
+pub use common::*;
+pub use engine::*;
 
-pub use ::common::types as types;
-pub use ::geometry::Surface as Surface;
-
+/**
+ * Library modules
+ */
 mod core;
 mod common;
+mod engine;
+mod player;
 mod particles;
 mod geometry;
-
-pub mod sims;
-
-use std::collections::HashMap;
-use ::core::image::Image as Image;
-use types::Vec4f;
-
-pub struct Engine<'a> {
-    scene: Box<Scene>,
-    materials: HashMap<&'a str, &'a Material>
-}
-
-impl<'a> Engine<'a> {
-    fn new() -> Engine<'a> {
-        Engine {
-            scene: Box::new(Scene::new()),
-            materials: HashMap::new()
-        }
-    }
-
-    fn render<I: Image>(&self, image: &mut I) {
-        println!("Rendering");
-    }
-
-    fn trace(depth: i32) -> Vec4f {
-        Vec4f::new(0.0, 0.0, 0.0, 0.0)
-    }
-}

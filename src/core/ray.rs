@@ -1,4 +1,4 @@
-use ::types::Vec3f;
+use ::Vec3f;
 
 pub struct Ray {
     position: Vec3f,

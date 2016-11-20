@@ -1,0 +1,12 @@
+{
+  "Basic Sword": {
+    "min_damage": "1",
+    "max_damage": "5"
+  },
+  "Blade of Famine": {
+    "parent": "Basic Sword",
+    "modifiers": {
+      "damage ": 5
+    }
+  }
+}

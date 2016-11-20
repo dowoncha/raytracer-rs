@@ -1,4 +1,5 @@
-use ::{Surface, Light};
+use ::geometry::Surface;
+use ::core::Light;
 
 /**
  * Scene object contains all surfaces, lights, and materials that will be rendered

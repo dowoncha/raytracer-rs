@@ -23,12 +23,12 @@ pub struct Specie {
 }
 
 impl Specie {
-    fn name(&self) -> String {
-        self.name
+    pub fn name(&self) -> &str {
+        self.name.as_str()
     }
 
-    fn update(&mut self) {
+    pub fn update(&mut self) {
         // Calculate new population and age distribution?
-        self.population *= self.birth_rate;
+        // self.population *= self.birth_rate;
     }
 }
