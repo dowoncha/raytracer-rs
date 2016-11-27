@@ -31,17 +31,18 @@ pub struct Rect<T> {
 }
 
 use std::ops::{Add, Sub};
+use std::cmp::{PartialOrd};
 
-impl<T> Rect<T> where T: Sub + Add {
-    pub fn left(&self) -> T { self.left }
-    pub fn right(&self) -> T { self.right }
-    pub fn top(&self) -> T { self.top }
-    pub fn bottom(&self) -> T { self.bottom }
+impl<T> Rect<T> where T: Sub + Add + PartialOrd {
+    pub fn left(&self) -> &T { &self.left }
+    pub fn right(&self) -> &T { &self.right }
+    pub fn top(&self) -> &T { &self.top }
+    pub fn bottom(&self) -> &T { &self.bottom }
 
-    pub fn x(&self) -> T { self.left }
-    pub fn y(&self) -> T { self.top }
-    pub fn width(&self) -> T { self.right - self.left }
-    pub fn height(&self) -> T { self.top - self.bottom }
+    pub fn x(&self) -> &T { &self.left }
+    pub fn y(&self) -> &T { &self.top }
+    // pub fn width(&self) -> T { self.right - self.left }
+    // pub fn height(&self) -> T { self.top - self.bottom }
 
     pub fn is_empty(&self) -> bool { self.left >= self.right || self.top >= self.bottom }
 
@@ -55,8 +56,8 @@ impl<T> Rect<T> where T: Sub + Add {
     pub fn set_xywh(&mut self, x: T, y: T, width: T, height: T) {
         self.left = x;
         self.top = y;
-        self.right = x + width;
-        self.bottom = y + height;
+        // self.right = x + width;
+        // self.bottom = y + height;
     }
 
     pub fn intersects(&self, other: &Rect<T>) -> bool {

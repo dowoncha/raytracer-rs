@@ -1,14 +1,14 @@
 use na::{dot};
 
 use ::Material;
-use ::core::Ray;
-use ::geometry::{Surface, HitContext};
-use ::Vec3f;
+use ::ray::Ray;
+use ::{Surface, HitContext};
+use ::types::Vec3f;
 
 pub struct Plane {
     position: Vec3f,
     normal: Vec3f,
-    material: Box<Material>
+    material: String
 }
 
 impl Surface for Plane {
@@ -28,12 +28,12 @@ impl Surface for Plane {
         false
     }
 
-    fn material(&self) -> &Material {
+    fn material(&self) -> &str {
         self.material.as_ref()
     }
 
-    fn set_material(&mut self, material: Box<Material>) {
-        self.material = material;
+    fn set_material(&mut self, material: &str) {
+        self.material = String::from(material);
     }
 
     fn normal(&self) -> Vec3f {

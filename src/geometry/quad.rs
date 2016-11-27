@@ -1,4 +1,4 @@
-use ::common::types::{Point};
+use ::types::{Point};
 
 pub struct Quad {
     a: Point,

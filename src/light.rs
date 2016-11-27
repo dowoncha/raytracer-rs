@@ -1,4 +1,4 @@
-use ::Vec3f;
+use ::types::Vec3f;
 
 pub struct Light {
     position: Vec3f,
@@ -8,12 +8,12 @@ pub struct Light {
 }
 
 impl Light {
-    pub fn new() -> Light {
+    pub fn new(position: Vec3f, ambient: Vec3f, diffuse: Vec3f, intensity: f32) -> Light {
         Light {
-            position: Vec3f::new(0.0, 0.0, 0.0),
-            ambient: Vec3f::new(0.0, 0.0, 0.0),
-            diffuse: Vec3f::new(0.0, 0.0, 0.0),
-            intensity: 1.0
+            position: position,
+            ambient: ambient,
+            diffuse: diffuse,
+            intensity: intensity
         }
     }
 

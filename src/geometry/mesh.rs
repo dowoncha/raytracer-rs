@@ -2,7 +2,7 @@ use std::io::{self, Read};
 use std::fs::File;
 
 use ::Material;
-use ::Vec3f;
+use ::types::Vec3f;
 use ::geometry::{Triangle, Surface};
 
 pub struct Mesh {

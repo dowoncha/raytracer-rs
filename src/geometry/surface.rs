@@ -1,13 +1,12 @@
-use ::Vec3f;
+use ::types::Vec3f;
 use ::Material;
-use ::core::Ray;
+use ::ray::Ray;
+
+use ::HitContext;
 
 pub trait Surface {
     fn intersect(&self, ray: &Ray, hit: &mut HitContext) -> bool;
-    fn material(&self) -> &Material;
-    fn set_material(&mut self, material: Box<Material>);
+    fn material(&self) -> &str;
+    fn set_material(&mut self, material: &str);
     fn normal(&self) -> Vec3f;
-}
-
-pub struct HitContext {
 }
