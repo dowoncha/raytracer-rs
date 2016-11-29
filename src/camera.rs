@@ -1,3 +1,5 @@
+use na;
+use na::{Norm};
 use ::types::Vec3f;
 use ::ray::Ray;
 
@@ -32,8 +34,27 @@ impl Camera {
         self.target = new_target;
     }
 
-    pub fn get_ray(&self, width: u32, height: u32) -> Ray {
-        unimplemented!();
+    pub fn get_ray(&self, x: u32, y: u32, offset_x: f32, offset_y: f32) -> Ray {
+        assert!(x < self.width, "x ({})is greater than width ({})", x, self.width);
+        assert!(y < self.height, "y ({}) is greater than height ({})", y, self.height);
+
+        let inverse_width = 1.0 / self.width as f32;
+        let inverse_height = 1.0 / self.height as f32;
+
+        let l = -0.1;
+        let r = 0.1;
+        let t = 0.1;
+        let b = -0.1;
+        let d = 0.1;
+
+        let u = l + (r - l) * ((x as f32) + offset_x) * inverse_width;
+        let v = b + (t - b) * ((y as f32) + offset_y) * inverse_height;
+
+        let mut direction = (self.right * u) - (self.up * v) - (self.forward * d);
+        direction.normalize_mut();
+
+
+        Ray::new(self.position, direction)
     }
 
     pub fn width(&self) -> u32 {

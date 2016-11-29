@@ -2,7 +2,7 @@ use na::{dot};
 
 use ::Material;
 use ::ray::Ray;
-use ::{Surface, HitContext};
+use ::{Surface, HitResult};
 use ::types::Vec3f;
 
 pub struct Plane {
@@ -12,7 +12,7 @@ pub struct Plane {
 }
 
 impl Surface for Plane {
-    fn intersect(&self, ray: &Ray, hit: &mut HitContext) -> bool {
+    fn intersect(&self, ray: &Ray) -> Option<HitResult> {
         // let denom = self.normal.dot(ray.direction());
         let denom = dot(&self.normal, &ray.direction());
 
@@ -25,7 +25,8 @@ impl Surface for Plane {
                 // ()
             // }
         }
-        false
+
+        None
     }
 
     fn material(&self) -> &str {

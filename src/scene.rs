@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use ::{Material, HitContext, Light};
+use ::{Material, HitResult, Light};
 use ::ray::Ray;
 use ::geometry::Surface;
 
@@ -39,7 +39,24 @@ impl<'a> Scene {
         self.lights.push(light);
     }
 
-    pub fn intersect_surfaces(&self, ray: &'a Ray) -> HitContext {
-        unimplemented!();
+    pub fn intersect_surfaces(&self, ray: &'a Ray, ignore: Option<&'a Box<Surface>>) -> Option<HitResult> {
+        for surface in &self.surfaces {
+            // TODO: Ignore a surface
+            // match ignore {
+            //     Some(ignore_surface) => {
+            //         if ignore_surface.eq(*surface) {
+            //             continue;
+            //         }
+            //     },
+            //     None => (),
+            // }
+
+            let result = match surface.intersect(ray) {
+                Some(result) => return Some(result),
+                None => continue
+            };
+        }
+
+        None
     }
 }
