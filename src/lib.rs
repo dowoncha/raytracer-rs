@@ -12,6 +12,7 @@
 // Nalgebra for math
 extern crate nalgebra as na;
 extern crate image;
+extern crate threadpool;
 
 pub use self::light::*;
 pub use self::scene::*;
@@ -26,12 +27,19 @@ mod geometry;
 mod ray;
 pub mod types;
 
-use ::types::{Vec3f};
-use image::{RgbaImage, ImageBuffer};
-use camera::Camera;
-use ray::Ray;
+/**
+ * Imports
+ */
 use std::fs::File;
 use std::path::Path;
+use std::sync::mpsc::channel;
+
+use image::{RgbaImage, ImageBuffer};
+use threadpool::ThreadPool;
+
+use ::types::{Vec3f};
+use camera::Camera;
+use ray::Ray;
 
 pub struct HitResult<'a> {
     pub time: f32,
@@ -59,30 +67,50 @@ pub enum SampleMode {
     Random(i32)
 }
 
-pub struct RenderOptions {
-    pub filename: &'static str,
+pub struct RenderConfig {
+    pub scene_name: &'static str,
+    pub output_name: &'static str,
     pub width: u32,
     pub height: u32,
-    pub sample_mode: SampleMode
+    pub sample_mode: SampleMode,
+    pub format: image::ImageFormat
 }
 
 pub type Color = Vec4f;
 
-pub fn render(scene: &Scene, args: RenderOptions) {
-    let mut img_buf: image::RgbaImage = ImageBuffer::new(args.width, args.height);
+pub struct App {
+    worker_pool: ThreadPool
+}
 
-    let camera = Camera::new(args.width, args.height);
-
-    'outer: for y in 0..camera.height() {
-        'inner: for x in 0..camera.width() {
-            let ray = camera.get_ray(x, y, 0.5, 0.5);
-            let pixel = trace(scene, &ray, 0);
-            // img_buf.put_pixel(x, y, pixel.as_ref());
+impl App {
+    pub fn new() -> App {
+        App {
+            worker_pool: ThreadPool::new(4)
         }
     }
 
-    let ref mut fout = File::create(&Path::new(args.filename)).unwrap();
-    let _ = image::ImageRgba8(img_buf).save(fout, image::PPM);
+    pub fn render(&self, config: RenderConfig) {
+        /**
+         * img_buffer
+         * Create the image buffer
+         * Atomic reference
+         */
+        let mut img_buffer: image::RgbaImage = ImageBuffer::new(config.width, config.height);
+
+        let (tx, rx) = channel::<u32>();
+
+        let scene = Scene::load(config.scene_name);
+
+        for (x, y, pixel) in img_buffer.enumerate_pixels_mut() {
+            // tx.send()
+            let ray = scene.camera.get_ray(x, y, 0.5, 0.5);
+            let pixel = trace(&scene, &ray, 0);
+            // img_buf.put_pixel(x, y, pixel.as_ref());
+        }
+
+        let ref mut fout = File::create(&Path::new(config.output_name)).unwrap();
+        let _ = image::ImageRgba8(img_buffer).save(fout, config.format);
+    }
 }
 
 fn gamma_encode(color: Color) -> Color {
@@ -91,9 +119,9 @@ fn gamma_encode(color: Color) -> Color {
     unimplemented!();
     // let mut out = Color::new_zeros(4);
     // out.index(0) = if color.x <= 0.0031308 { 12.92 * color.x } else { 1.055 * std::math::pow(color.x, gamma) - 0.055 };
-  // out.y = (color.y <= 0.0031308f ) ? 12.92 * color.y : 1.055 * std::pow(color.y, gamma) - 0.055;
-  // out.z = (color.z <= 0.0031308f ) ? 12.92 * color.z : 1.055 * std::pow(color.z, gamma) - 0.055;
-  // out.w = (color.w <= 0.0031308f ) ? 12.92 * color.w : 1.055 * std::pow(color.z, gamma) - 0.055;
+    // out.y = (color.y <= 0.0031308f ) ? 12.92 * color.y : 1.055 * std::pow(color.y, gamma) - 0.055;
+    // out.z = (color.z <= 0.0031308f ) ? 12.92 * color.z : 1.055 * std::pow(color.z, gamma) - 0.055;
+    // out.w = (color.w <= 0.0031308f ) ? 12.92 * color.w : 1.055 * std::pow(color.z, gamma) - 0.055;
 }
 
 const MAX_TRACE_DEPTH: i32 = 2;
@@ -134,8 +162,8 @@ fn trace(scene: &Scene, ray: &Ray, depth: i32) -> Vec4f {
 }
 
 fn local_shading<'a>(scene: &'a Scene, ray: &'a Ray, hit_result: &'a HitResult) -> Vec4f {
-    let material_name = hit_result.hit_item.material();
-    let material = scene.get_material(material_name).unwrap();
+    // let material_name = hit_result.hit_item.material();
+    // let material = scene.get_material(material_name).unwrap();
 
     // let out = material.ambient();
     unimplemented!();

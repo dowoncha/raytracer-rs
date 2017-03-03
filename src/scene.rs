@@ -3,12 +3,14 @@ use std::collections::HashMap;
 use ::{Material, HitResult, Light};
 use ::ray::Ray;
 use ::geometry::Surface;
+use ::camera::Camera;
 
 /**
  * Scene object contains all surfaces, lights, and materials that will be rendered
  */
 
 pub struct Scene {
+    pub camera: Camera,
     materials: HashMap<&'static str, Box<Material>>,
     surfaces: Vec<Box<Surface>>,
     lights: Vec<Box<Light>>
@@ -17,10 +19,15 @@ pub struct Scene {
 impl<'a> Scene {
     pub fn new() -> Scene {
         Scene {
+            camera: Camera::new(512, 512),
             materials: HashMap::new(),
             surfaces: Vec::new(),
             lights: Vec::new()
         }
+    }
+
+    pub fn load(filename: &'static str) -> Scene {
+        unimplemented!();
     }
 
     pub fn add_material(&mut self, name: &'static str, mat: Box<Material>) {
