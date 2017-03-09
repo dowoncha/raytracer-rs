@@ -68,18 +68,19 @@ pub enum SampleMode {
 }
 
 pub struct RenderConfig {
-    pub scene_name: &'static str,
-    pub output_name: &'static str,
-    pub width: u32,
-    pub height: u32,
-    pub sample_mode: SampleMode,
-    pub format: image::ImageFormat
+    pub scene_name: &'static str,           // Input scene dir
+    pub output_name: &'static str,          // Output file name
+    pub width: u32,                         // Width of final image
+    pub height: u32,                        // Height of final image
+    pub sample_mode: SampleMode,            // Anti aliasing sampling mode
+    pub format: image::ImageFormat          // Ext of output image
 }
 
 pub type Color = Vec4f;
 
 pub struct App {
-    worker_pool: ThreadPool
+    worker_pool: ThreadPool,
+    // scene: Box<Scene>,
 }
 
 impl App {
@@ -97,15 +98,24 @@ impl App {
          */
         let mut img_buffer: image::RgbaImage = ImageBuffer::new(config.width, config.height);
 
+        /**
+         * Do i even need a channel
+         */
         let (tx, rx) = channel::<u32>();
 
-        let scene = Scene::load(config.scene_name);
+        let scene_name = String::new();
+        if let Ok(scene) = Scene::load(scene_name) {
+            for (x, y, pixel) in img_buffer.enumerate_pixels_mut() {
+                // tx.send()
+                let ray = scene.camera.get_ray(x, y, 0.5, 0.5);
 
-        for (x, y, pixel) in img_buffer.enumerate_pixels_mut() {
-            // tx.send()
-            let ray = scene.camera.get_ray(x, y, 0.5, 0.5);
-            let pixel = trace(&scene, &ray, 0);
-            // img_buf.put_pixel(x, y, pixel.as_ref());
+                self.worker_pool.execute(move || {
+                    println!("Worker!");
+                    // let pixel = trace(&scene, &ray, 0);
+                });
+
+                // img_buf.put_pixel(x, y, pixel.as_ref());
+            }
         }
 
         let ref mut fout = File::create(&Path::new(config.output_name)).unwrap();

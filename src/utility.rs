@@ -78,29 +78,10 @@ pub fn gcd(mut a: u64, mut b: u64) -> (u64, u64){
     (a, d)
 }
 
-/**
-* chinese_remainder_theorem
-* If one knows the remainders of the division of an integer n by several integers
-* Then one can determine uniquely the remainder of the division of n by the product of these integers
-*/
-pub fn chinese_remainder_theorem() {
-
-}
-
-pub fn divisors(n: u64) {
-}
-
-pub fn mobius(n: u64) {
-
-}
-
-pub fn totient(n: u64) {
-
-}
 
 #[cfg(test)]
 mod tests {
-    use super:: mul_mod;
+    use super::mul_mod;
 
     #[test]
     fn mul_mod_test() {
@@ -111,9 +92,10 @@ mod tests {
 /**
  * mul_mod
  * Computes a * b (mod m)
+ * why did I write this?
  */
 pub fn mul_mod(mut a: u64, mut b: u64, mut m: u64) -> u64 {
-    let mut d = 0u64;
+    let mut out = 0u64; // final result
     let mp2 = m >> 1;
 
     if a >= m {
@@ -124,17 +106,20 @@ pub fn mul_mod(mut a: u64, mut b: u64, mut m: u64) -> u64 {
         b %= m;
     }
 
+    /**
+     * voodoo magic
+     */
     for i in 0..64 {
-        d = if d > mp2 { (d << 1u64) - m } else { d << 1u64 };
+        out = if out > mp2 { (out << 1u64) - m } else { out << 1u64 };
 
         if a & 0x8000000000000000u64 != 0 {
-            d += b;
+            out += b;
         }
         if d > m {
-            d -= m;
+            out -= m;
         }
         a <<= 1;
     }
 
-    d
+    out
 }

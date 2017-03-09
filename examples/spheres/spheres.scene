@@ -1,4 +1,4 @@
-spheres
+name spheres
 camera 50,52,295.6
 light
 geometry sphere 16.5 27,16.5,47 specular
