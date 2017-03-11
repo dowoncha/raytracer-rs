@@ -1,5 +1,5 @@
 /**
- * Type definitions file
+ * Common type definitions file
  */
 
 use na::{Vector3, Vector4, Matrix3};
@@ -7,6 +7,8 @@ use na::{Vector3, Vector4, Matrix3};
 pub type Vec3f = Vector3<f32>;
 pub type Vec4f = Vector4<f32>;
 pub type Mat3f = Matrix3<f32>;
+
+/// Wtf is this
 pub type GMSec = u64;
 
 pub type GFRect = Rect<f32>;
@@ -19,10 +21,12 @@ pub struct Point<T> {
     pub y: T
 }
 
+/// Convenience function
 pub fn make_argb(a: f32, r: f32, g: f32, b: f32) -> Color {
     Color::new(a, r, g, b)
 }
 
+/// What do i use this for
 pub struct Rect<T> {
     left: T,
     top: T,

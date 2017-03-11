@@ -47,7 +47,7 @@ fn run_render(matches: &ArgMatches) -> Result<(), String> {
 /**
  * Handles cli subcommands
  * Matches argument subcommands and calls respective function
- */
+ */ 
 fn run(matches: ArgMatches) -> Result<(), String> {
     println!("Running");
 
