@@ -1,17 +1,17 @@
 #[macro_use]
 extern crate clap;
+
+#[macro_use]
+extern crate log;
+
 extern crate raytracer as rt;
 extern crate image;
+extern crate error_chain;
 
-use std::process;
-use rt::{RenderConfig};
 use clap::{Arg, SubCommand, ArgMatches};
 
 fn run_render(matches: &ArgMatches) -> Result<(), String> {
     println!("Starting render");
-
-    // Create the raytracer
-    let app = rt::App::new();
 
     /**
      * width
@@ -29,17 +29,6 @@ fn run_render(matches: &ArgMatches) -> Result<(), String> {
     let height: u32 = if let Some(str_height) = matches.value_of("height") {
         str_height.parse().unwrap()
     } else { 600 };
-
-    let render_config = RenderConfig {
-        scene_name: "spheres",
-        output_name: "spheres",
-        width: width,
-        height: height,
-        sample_mode: rt::SampleMode::None,
-        format: image::ImageFormat::PPM
-    };
-
-    let image_buffer = app.render(render_config);
 
     Ok(())
 }

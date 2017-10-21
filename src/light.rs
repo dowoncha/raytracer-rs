@@ -1,19 +1,33 @@
 use ::types::Vec3f;
+use ::types::Color;
 
-pub struct Light {
-    position: Vec3f,
-    ambient: Vec3f,
-    diffuse: Vec3f,
-    intensity: f32
+pub trait Light {
+    /// Light direction
+    /// v: Point to illuminate
+    /// Returns the direction of light rays pointing from v
+    fn direction(&self, v: Vec3f) -> Vec3f; 
+    
+    /// Light illumincation
+    /// v: Point to illuminate
+    /// Returns the color of the light at the pointi v
+    fn illumination(&self, v: Vec3f) -> Color;
+    
+    /// Light shadow
+    /// Line index of the closest shadow ray intesection
+    /// Where the point is in shadow
+    fn shadow(&self, t: f64) -> bool;
 }
 
-impl Light {
-    pub fn new(position: Vec3f, ambient: Vec3f, diffuse: Vec3f, intensity: f32) -> Light {
-        Light {
-            position: position,
-            ambient: ambient,
-            diffuse: diffuse,
-            intensity: intensity
+pub struct PointLight {
+    position: Vec3f,
+    color: Color,
+}
+
+impl PointLight {
+    pub fn new(position: Vec3f, color: Color) -> Self {
+        Self {
+            position,
+            color
         }
     }
 
@@ -21,23 +35,21 @@ impl Light {
         self.position = position;
     }
 
-    pub fn ambient(&self) -> &Vec3f {
-        &self.ambient
+    fn position(&self) -> &Vec3f {
+        &self.position
     }
+}
 
-    pub fn set_ambient(&mut self, ambient: Vec3f) {
-        self.ambient = ambient;
+impl Light for PointLight {
+    fn direction(&self, v: Vec3f) -> Vec3f {
+        self.position - v
     }
-
-    pub fn diffuse(&self) -> &Vec3f {
-        &self.diffuse
+    
+    fn illumination(&self, v: Vec3f) -> Color {
+        self.color
     }
-
-    pub fn set_diffuse(&mut self, diffuse: Vec3f) {
-        self.diffuse = diffuse;
-    }
-
-    pub fn intensity(&self) -> f32 {
-        self.intensity
+    
+    fn shadow(&self, t: f64) -> bool {
+        t < 1.0
     }
 }

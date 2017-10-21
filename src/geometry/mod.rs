@@ -7,17 +7,17 @@
 /**
  * Exports exports
  */
-pub use self::sphere::*;
-pub use self::plane::*;
-pub use self::mesh::*;
-pub use self::triangle::*;
-pub use self::surface::*;
+// pub use self::sphere::*;
+// pub use self::plane::*;
+// pub use self::mesh::*;
+// pub use self::triangle::*;
 
 /**
  * Imports
  */
-mod surface;
-mod sphere;
-mod plane;
-mod mesh;
-mod triangle;
+pub mod object;
+// mod sphere;
+// mod plane;
+// mod mesh;
+// mod triangle;
+// mod kd_tree;

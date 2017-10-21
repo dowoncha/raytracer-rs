@@ -1,7 +1,14 @@
 use na;
 use na::{Norm};
-use ::types::Vec3f;
+use ::types::{Vec3f, Mat4f};
 use ::ray::Ray;
+
+pub struct CallbackCamera<FN> {
+    ray_fn: FN,
+    transformation: Mat4f
+}
+
+// impl<FN: Fn()
 
 pub struct Camera {
     position: Vec3f,

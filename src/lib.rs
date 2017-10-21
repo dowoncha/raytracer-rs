@@ -9,10 +9,23 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
 
+#[macro_use]
+extern crate error_chain;
+extern crate log;
+
+mod errors {
+    error_chain! {
+        
+    }
+}
+
 // Nalgebra for math
 extern crate nalgebra as na;
 extern crate image;
-extern crate threadpool;
+extern crate futures;
+
+use futures::prelude::*;
+// extern crate threadpool;
 
 pub use self::light::*;
 pub use self::scene::*;
@@ -20,12 +33,14 @@ pub use self::material::*;
 pub use self::geometry::*;
 
 mod camera;
+mod finish;
 mod light;
 mod scene;
 mod material;
 mod geometry;
 mod ray;
-pub mod types;
+mod types;
+mod texture;
 
 /**
  * Imports
@@ -33,32 +48,98 @@ pub mod types;
 use std::fs::File;
 use std::path::Path;
 use std::sync::mpsc::channel;
+use std::sync::Arc;
 
 use image::{RgbaImage, ImageBuffer};
-use threadpool::ThreadPool;
 
-use ::types::{Vec3f};
-use camera::Camera;
+use geometry::object::{Object, Intersection};
+use ::types::{Vec3f, Color, TColor};
 use ray::Ray;
+use texture::Texture;
 
-pub struct HitResult<'a> {
-    pub time: f32,
-    pub max_time: f32,
-    pub location: Vec3f,
-    pub collided: bool,
-    pub hit_item: &'a (Surface + 'a)
+pub fn render(scene: &mut Scene) {
+   let future = render_async(scene); 
 }
 
-impl<'a> HitResult<'a> {
-    pub fn new(hit_item: &'a Surface) -> HitResult<'a> {
-        HitResult {
-            time: 0.0,
-            max_time: 10000.0,
-            location: Vec3f::new(0.0, 0.0, 0.0),
-            collided: false,
-            hit_item: hit_item
+fn render_async(scene: &mut Scene) -> Box<Future<Item=u32,Error=String>> {
+    unimplemented!()
+}
+
+struct RenderPayload {
+    // future
+    // scene
+    scene: Arc<Scene>
+    // bvh
+}
+
+struct RenderState<'s> {
+    scene: &'s Scene,
+    intersection: &'s Intersection,
+    recursion_level: usize,
+    ior: f64,
+    viewer: Vec3f,
+    reflected: Vec3f,
+    r: Vec3f,
+    texture: &'s Texture
+}
+
+fn render_scene(payload: RenderPayload) {
+    // Precalculate bouding box transformations, etc
+    
+    let RenderPayload {
+        scene,
+        ..
+    } = payload;
+    
+    // Iterate through each pixel
+    let (width, height) = (512, 512);
+    // let (width, height) = scene.canvas_dimensions();
+    // let (region_x, region_y) = scene.region_position();
+    // let (outer_width, outer_height) = scene.outer_dimensions();
+    'outer: for y in 0..height {
+        'inner: for x in 0..width {
+            //let nx = ( x + region_x ) / (outer_width - 1);
+            //let ny = ( y + region_y ) / (outer_height - 1);
+        
+            //let ray = scene.camera.ray(nx, ny);
+            
+            // let color = shoot_ray(&state, ray);
+            // scene.canvas().set_pixel(x, y, color);
         }
+        
+        // Increment future
     }
+}
+
+fn shoot_ray(state: &mut RenderState, ray: Ray) { // -> TColor {
+    if state.recursion_level == 0  {
+        // return black
+    }
+    
+    {
+        state.recursion_level -= 1;
+    }
+    
+    /*
+    let intersection = {
+        // let bvh = &state.bvh;
+        // bvh.intersection(ray)
+    };
+    
+    if let Some(intersection) = intersection {
+        // Found an intersection
+        
+    }
+    */
+    
+    // TColor::from_channels(0.0, 0.0, 0.0, 1.0)
+}
+
+fn evaluate_specular(state: &RenderState) -> Color {
+    if let Some(ref finish) = state.texture.finish() {
+    }
+    
+    Color::black()
 }
 
 pub enum SampleMode {
@@ -74,53 +155,6 @@ pub struct RenderConfig {
     pub height: u32,                        // Height of final image
     pub sample_mode: SampleMode,            // Anti aliasing sampling mode
     pub format: image::ImageFormat          // Ext of output image
-}
-
-pub type Color = Vec4f;
-
-pub struct App {
-    worker_pool: ThreadPool,
-    // scene: Box<Scene>,
-}
-
-impl App {
-    pub fn new() -> App {
-        App {
-            worker_pool: ThreadPool::new(4)
-        }
-    }
-
-    pub fn render(&self, config: RenderConfig) {
-        /**
-         * img_buffer
-         * Create the image buffer
-         * Atomic reference
-         */
-        let mut img_buffer: image::RgbaImage = ImageBuffer::new(config.width, config.height);
-
-        /**
-         * Do i even need a channel
-         */
-        let (tx, rx) = channel::<u32>();
-
-        let scene_name = String::new();
-        if let Ok(scene) = Scene::load(scene_name) {
-            for (x, y, pixel) in img_buffer.enumerate_pixels_mut() {
-                // tx.send()
-                let ray = scene.camera.get_ray(x, y, 0.5, 0.5);
-
-                self.worker_pool.execute(move || {
-                    println!("Worker!");
-                    // let pixel = trace(&scene, &ray, 0);
-                });
-
-                // img_buf.put_pixel(x, y, pixel.as_ref());
-            }
-        }
-
-        let ref mut fout = File::create(&Path::new(config.output_name)).unwrap();
-        let _ = image::ImageRgba8(img_buffer).save(fout, config.format);
-    }
 }
 
 fn gamma_encode(color: Color) -> Color {
@@ -143,6 +177,7 @@ fn trace(scene: &Scene, ray: &Ray, depth: i32) -> Vec4f {
         return Vec4f::new(0.0, 0.0, 0.0, 0.0);
     }
 
+    /*
     let hit_data = match scene.intersect_surfaces(ray, None) {
         Some(result) => result,
         None => return Vec4f::new(0.0, 0.0, 0.0, 0.0)
@@ -155,11 +190,12 @@ fn trace(scene: &Scene, ray: &Ray, depth: i32) -> Vec4f {
     let material_name = hit_data.hit_item.material();
 
     let reflection_coef = 0.5;
+    */
     // let reflection_coef = match scene.get_material(material_name) {
     //     Some(material) => material.reflectivity(),
     //     None => 0.0
     // };
-
+    /*
     if reflection_coef > 0.0 {
         let incident = -ray.direction();
         // Vector3f dir = incident - data.normal * (2.0f * data.normal.dot(incident));
@@ -167,14 +203,9 @@ fn trace(scene: &Scene, ray: &Ray, depth: i32) -> Vec4f {
         // Vector4f reflect = Trace(reflectionRay, depth + 1);
         // local = Utility::lerp(local, reflect, reflectionCoef);
     }
+    */
 
-    local_color
+    Vec4f::new(0.0, 0.0, 0.0, 0.0)
+    // local_color
 }
 
-fn local_shading<'a>(scene: &'a Scene, ray: &'a Ray, hit_result: &'a HitResult) -> Vec4f {
-    // let material_name = hit_result.hit_item.material();
-    // let material = scene.get_material(material_name).unwrap();
-
-    // let out = material.ambient();
-    unimplemented!();
-}

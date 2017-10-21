@@ -4,21 +4,41 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 
-use ::{Material, HitResult, Light};
+use image::{GenericImage, RgbaImage};
+
+use geometry::object::Object;
+use ::{Material, Light};
 use ::ray::Ray;
-use ::geometry::Surface;
 use ::camera::Camera;
+
+enum RenderQuality {
+    None,           // Render nothing
+    // Pigment,        
+    Lights,         // Lights and Shadows
+    Finish,         // Object finishes
+    Transparency,   // Transparency/Refraction
+    Reflection,     // Specular Reflection
+    Full            // Everything
+}
 
 /**
  * Scene object contains all surfaces, lights, and materials that will be rendered
  */
 
 pub struct Scene {
-    pub name: String,
+    // background
+    // default texture
+    // default interior
+    // canvas
+    pub name: String, //    deprecate?
     pub camera: Camera,
     materials: HashMap<&'static str, Box<Material>>,
-    surfaces: Vec<Box<Surface>>,
-    lights: Vec<Box<Light>>
+    objects: Vec<Box<Object>>,
+    lights: Vec<Box<Light>>,
+    quality: RenderQuality,
+    recursion_limit: usize,
+    initialized: bool,
+    canvas: Option<RgbaImage>, // Option<GenericImage<Pixel>>
 }
 
 pub enum SceneError {
@@ -38,15 +58,37 @@ impl<'a> Scene {
             name: String::new(),
             camera: Camera::new(512, 512),
             materials: HashMap::new(),
-            surfaces: Vec::new(),
-            lights: Vec::new()
+            objects: Vec::new(),
+            lights: Vec::new(),
+            quality: RenderQuality::Full,
+            recursion_limit: 5,
+            initialized: true,
+            canvas: None
         }
     }
 
+    pub fn init(&mut self) {
+        // assert_eq!(!self.initialized);
+        self.initialized = true;
+        
+        // Set scene dimensions
+        if let Some(ref canvas) = self.canvas {
+            let (width, height) = canvas.dimensions();
+             
+        }
+        
+        // Initialize background
+        
+        // Initalize texture
+        
+        // Initialize aech objects, texture and interior
+    }
+    
     /**
      * load a scene file into the application
      * filename path to the scene file ".scene" ext
      */
+    /*
     pub fn load(filename: String) -> Result<Scene, SceneError> {
         println!("Loading scene {}", filename);
 
@@ -69,12 +111,12 @@ impl<'a> Scene {
             camera: Camera::new(512, 512),
             materials: HashMap::new(),
             surfaces: Vec::new(),
-            lights: Vec::new()
+            lights: Vec::new(),
         };
 
         Ok(scene)
     }
-
+    */
     fn parse(line: &str) -> Result<(), SceneError> {
         use std::str;
 
@@ -107,14 +149,11 @@ impl<'a> Scene {
         self.materials.get(name)
     }
 
-    pub fn add_surface(&mut self, surface: Box<Surface>) {
-        self.surfaces.push(surface);
-    }
-
     pub fn add_light(&mut self, light: Box<Light>) {
         self.lights.push(light);
     }
 
+    /*
     pub fn intersect_surfaces(&self, ray: &'a Ray, ignore: Option<&'a Box<Surface>>) -> Option<HitResult> {
         for surface in &self.surfaces {
             // TODO: Ignore a surface
@@ -135,4 +174,5 @@ impl<'a> Scene {
 
         None
     }
+    */
 }

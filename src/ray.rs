@@ -1,6 +1,6 @@
-use ::types::Vec3f;
+use ::types::{Mat4f, Vec3f};
 
-#[derive(Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct Ray {
     position: Vec3f,
     direction: Vec3f
@@ -12,6 +12,10 @@ impl Ray {
             position: position,
             direction: direction
         }
+    }
+
+    pub fn transform(self, transform: Mat4f) -> Self {
+        unimplemented!()
     }
 
     pub fn evaluate(&self, t: f32) -> Vec3f {

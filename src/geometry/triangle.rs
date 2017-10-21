@@ -1,1 +1,5 @@
-pub type Triangle = [u32; 3];
+pub struct Triangle {
+    a: Vec3f,
+    ab: Vec3f,
+    ac: Vec3f
+}
