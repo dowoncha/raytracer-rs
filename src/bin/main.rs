@@ -8,9 +8,10 @@ extern crate raytracer as rt;
 extern crate image;
 extern crate error_chain;
 
+use rt::errors::*;
 use clap::{Arg, SubCommand, ArgMatches};
 
-fn run_render(matches: &ArgMatches) -> Result<(), String> {
+fn run_render(matches: &ArgMatches) -> Result<()> {
     println!("Starting render");
 
     /**
@@ -29,6 +30,7 @@ fn run_render(matches: &ArgMatches) -> Result<(), String> {
     let height: u32 = if let Some(str_height) = matches.value_of("height") {
         str_height.parse().unwrap()
     } else { 600 };
+    
 
     Ok(())
 }
@@ -37,7 +39,7 @@ fn run_render(matches: &ArgMatches) -> Result<(), String> {
  * Handles cli subcommands
  * Matches argument subcommands and calls respective function
  */
-fn run(matches: ArgMatches) -> Result<(), String> {
+fn run(matches: ArgMatches) -> Result<()> {
     println!("Running");
 
     match matches.subcommand() {
@@ -90,8 +92,22 @@ fn main() {
         )
         .get_matches();
 
-    if let Err(e) = run(matches) {
-        println!("Raytracer error: {}", e);
-        process::exit(1);
+    if let Err(ref e) = run(matches) {
+        use std::io::Write;
+        let stderr = &mut ::std::io::stderr();
+        let errmsg = "Error writing to stderr";
+        
+        writeln!(stderr, "error: {}", e).expect(errmsg);
+        
+        for e in e.iter().skip(1) {
+            writeln!(stderr, "caused by: {}", e).expect(errmsg);
+        }
+        
+        // Backtrace
+        if let Some(backtrace) = e.backtrace() {
+            writeln!(stderr, "backtrace: {:?}", backtrace).expect(errmsg);
+        }
+        
+        std::process::exit(1);
     }
 }

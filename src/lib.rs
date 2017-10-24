@@ -13,7 +13,7 @@
 extern crate error_chain;
 extern crate log;
 
-mod errors {
+pub mod errors {
     error_chain! {
         
     }
