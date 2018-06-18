@@ -32,6 +32,10 @@ pub use self::scene::*;
 pub use self::material::*;
 pub use self::geometry::*;
 
+pub mod device;
+mod render;
+mod kernel;
+mod util;
 mod camera;
 mod finish;
 mod light;
@@ -52,9 +56,10 @@ use std::sync::Arc;
 
 use image::{RgbaImage, ImageBuffer};
 
-use geometry::object::{Object, Intersection};
+use geometry::object::Intersection;
+
 use ::types::{Vec3f, Color, TColor};
-use ray::Ray;
+pub use ray::Ray;
 use texture::Texture;
 
 pub fn render(scene: &mut Scene) {

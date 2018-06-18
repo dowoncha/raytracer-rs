@@ -9,8 +9,8 @@ pub struct Ray {
 impl Ray {
     pub fn new(position: Vec3f, direction: Vec3f) -> Ray {
         Ray {
-            position: position,
-            direction: direction
+            position,
+            direction
         }
     }
 
