@@ -12,9 +12,10 @@ authors = ["Dowon Cha"]
 
 [dependencies]
 clap = "*"
-futures = "0.2.1"
+futures = "*"
 lazy_static = "0.2"
 nalgebra = "0.10.*"
+cgmath = "*"
 # serde = "0.8"
 # serde_derive = { version = "0.8", optional = true }
 # serde_json = "0.8"

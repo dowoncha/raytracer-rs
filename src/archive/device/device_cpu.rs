@@ -1,7 +1,7 @@
 use super::{Device, DeviceInfo};
 use super::task::{DeviceTask, DeviceTaskKind};
 
-use render::{Rendertile,RenderTileTask};
+use render::{RenderTile,RenderTileTask};
 
 use kernel;
 
